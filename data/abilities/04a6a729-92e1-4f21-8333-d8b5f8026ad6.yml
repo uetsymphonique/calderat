@@ -1,0 +1,31 @@
+- access: {}
+  additional_info: {}
+  buckets:
+  - discovery
+  delete_payload: true
+  description: "Wizard Spider uses TrickBot to obtain the IP address, location, and\
+    \ other relevant network information from the victim\u2019s machine.\n"
+  executors:
+  - additional_info: {}
+    build_target: null
+    cleanup: []
+    code: null
+    command: ipconfig /all
+    language: null
+    name: cmd
+    parsers: []
+    payloads: []
+    platform: windows
+    timeout: 60
+    uploads: []
+    variations: []
+  id: 04a6a729-92e1-4f21-8333-d8b5f8026ad6
+  name: TrickBot System Network Configuration Discovery (2) (2)
+  plugin: ''
+  privilege: ''
+  repeatable: false
+  requirements: []
+  singleton: false
+  tactic: discovery
+  technique_id: T1016
+  technique_name: System Network Configuration Discovery

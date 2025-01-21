@@ -1,0 +1,32 @@
+- access: {}
+  additional_info: {}
+  buckets:
+  - discovery
+  delete_payload: true
+  description: 'Wizard Spider uses TrickBot to collect the local users of the system.
+
+    '
+  executors:
+  - additional_info: {}
+    build_target: null
+    cleanup: []
+    code: null
+    command: net user >> discovery.txt
+    language: null
+    name: cmd
+    parsers: []
+    payloads: []
+    platform: windows
+    timeout: 60
+    uploads: []
+    variations: []
+  id: b2610bb5-593f-4d02-a6f6-ff50b6b37321
+  name: TrickBot Local Account Discovery (2) (2)
+  plugin: ''
+  privilege: ''
+  repeatable: false
+  requirements: []
+  singleton: false
+  tactic: discovery
+  technique_id: T1087.001
+  technique_name: 'Account Discovery: Local Account'

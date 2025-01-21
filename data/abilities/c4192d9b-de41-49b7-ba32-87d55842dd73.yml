@@ -1,0 +1,31 @@
+- access: {}
+  additional_info: {}
+  buckets:
+  - discovery
+  delete_payload: true
+  description: "Wizard Spider uses TrickBot to obtain the network connection information\
+    \ from the victim\u2019s machine.\n"
+  executors:
+  - additional_info: {}
+    build_target: null
+    cleanup: []
+    code: null
+    command: netstat -tan
+    language: null
+    name: cmd
+    parsers: []
+    payloads: []
+    platform: windows
+    timeout: 60
+    uploads: []
+    variations: []
+  id: c4192d9b-de41-49b7-ba32-87d55842dd73
+  name: TrickBot System Network Connections Discovery (2) (2)
+  plugin: ''
+  privilege: ''
+  repeatable: false
+  requirements: []
+  singleton: false
+  tactic: discovery
+  technique_id: T1049
+  technique_name: System Network Connections Discovery

@@ -1,0 +1,17 @@
+adversary_id: 11a31de3-4d58-492d-acc5-ce5865b310c5
+atomic_ordering:
+- cbbe871e-dbdc-482b-b472-2583e68a82ea
+- fb2e409b-ab8f-4994-aba3-9be21cd7aa6b
+- 51a3b4eb-bd8b-4ac2-9b8d-6cf3810bb1da
+- b2610bb5-593f-4d02-a6f6-ff50b6b37321
+- ba0dc844-e5e6-4fed-bafb-1099919f90cd
+- 04a6a729-92e1-4f21-8333-d8b5f8026ad6
+- c4192d9b-de41-49b7-ba32-87d55842dd73
+- f37c8efd-f2a9-4695-9c5f-01335b362c15
+- 976f4078-f8e8-499e-8fc1-a7c041b93cc4
+description: Using in test calderat
+has_repeatable_abilities: false
+name: 'Calderat''s testcase (Windows): No fact, no payload '
+objective: 495a9828-cab1-44dd-a0ca-66e58177d8cc
+plugin: ''
+tags: []

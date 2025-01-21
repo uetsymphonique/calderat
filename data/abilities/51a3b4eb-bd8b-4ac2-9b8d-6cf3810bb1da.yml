@@ -1,0 +1,31 @@
+- access: {}
+  additional_info: {}
+  buckets:
+  - discovery
+  delete_payload: true
+  description: The net utility is executed via cmd to enumerate detailed information
+    about a specific user account.
+  executors:
+  - additional_info: {}
+    build_target: null
+    cleanup: []
+    code: null
+    command: net user %USERNAME% /domain
+    language: null
+    name: cmd
+    parsers: []
+    payloads: []
+    platform: windows
+    timeout: 60
+    uploads: []
+    variations: []
+  id: 51a3b4eb-bd8b-4ac2-9b8d-6cf3810bb1da
+  name: Account Discovery (2)
+  plugin: ''
+  privilege: ''
+  repeatable: false
+  requirements: []
+  singleton: false
+  tactic: discovery
+  technique_id: T1087
+  technique_name: Account Discovery

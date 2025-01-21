@@ -1,0 +1,32 @@
+- access: {}
+  additional_info: {}
+  buckets:
+  - discovery
+  delete_payload: true
+  description: 'Wizard Spider uses TrickBot to gather client specfic information
+
+    '
+  executors:
+  - additional_info: {}
+    build_target: null
+    cleanup: []
+    code: null
+    command: net config workstation >> discovery.txt
+    language: null
+    name: cmd
+    parsers: []
+    payloads: []
+    platform: windows
+    timeout: 60
+    uploads: []
+    variations: []
+  id: f37c8efd-f2a9-4695-9c5f-01335b362c15
+  name: TrickBot System Information Discovery (net config) (2) (2)
+  plugin: ''
+  privilege: ''
+  repeatable: false
+  requirements: []
+  singleton: false
+  tactic: discovery
+  technique_id: T1082
+  technique_name: System Information Discovery
