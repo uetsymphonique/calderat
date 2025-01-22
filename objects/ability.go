@@ -2,7 +2,7 @@ package objects
 
 import (
 	"calderat/objects/secondclass"
-	logger "calderat/utils"
+	"calderat/utils/logger"
 	"errors"
 	"fmt"
 	"os"
@@ -18,10 +18,10 @@ const (
 
 // Ability represents a configurable ability loaded from a YAML file.
 type Ability struct {
-	AbilityID     string                 `yaml:"id"`
+	AbilityId     string                 `yaml:"id"`
 	Tactic        string                 `yaml:"tactic"`
 	Technique     string                 `yaml:"technique_name"`
-	TechniqueID   string                 `yaml:"technique_id"`
+	TechniqueId   string                 `yaml:"technique_id"`
 	Name          string                 `yaml:"name"`
 	Description   string                 `yaml:"description"`
 	Executors     []secondclass.Executor `yaml:"executors"`
@@ -32,18 +32,18 @@ type Ability struct {
 }
 
 // NewAbility creates a new Ability object with the given parameters.
-func NewAbility(abilityID, tactic, technique, techniqueID, name, description string, executors []secondclass.Executor, privilege string, deletePayload bool, log *logger.Logger) *Ability {
+func NewAbility(ability_id, tactic, technique, technique_id, name, description string, executors []secondclass.Executor, privilege string, delete_payload bool, log *logger.Logger) *Ability {
 
 	return &Ability{
-		AbilityID:     abilityID,
+		AbilityId:     ability_id,
 		Tactic:        tactic,
 		Technique:     technique,
-		TechniqueID:   techniqueID,
+		TechniqueId:   technique_id,
 		Name:          name,
 		Description:   description,
 		Executors:     executors,
 		Privilege:     privilege,
-		DeletePayload: deletePayload,
+		DeletePayload: delete_payload,
 		Logger:        log,
 	}
 }

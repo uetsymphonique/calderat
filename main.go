@@ -2,7 +2,8 @@ package main
 
 import (
 	"calderat/objects"
-	logger "calderat/utils"
+	"calderat/utils/envdetector"
+	logger "calderat/utils/logger"
 	"flag"
 	"fmt"
 )
@@ -19,24 +20,38 @@ func main() {
 		return
 	}
 
+	env, err := envdetector.DetectEnvironment(log)
+	if err != nil {
+		log.Log(logger.ERROR, "Failed to detect environment: %v", err)
+		return
+	}
+
+	fmt.Printf("Operating System: %s\n", env.OS)
+	fmt.Printf("Shells: %s\n", env.ShortnameShells)
+	fmt.Println("Available Shells:")
+	for _, shell := range env.AvailableShells {
+		fmt.Printf("- %s\n", shell)
+	}
+	ipaddrs, err := env.GetAllIPAddresses()
+
+	fmt.Printf("Available IP Addresses: %v\n", ipaddrs)
+
 	// ----------------------------------------------------------------
 
-	// Load abilities from YAML
+	// // Load abilities from YAML
 	// abilities, err := objects.LoadMultipleFromYAML("data/26c8b8b5-7b5b-4de1-a128-7d37fb14f517.yml", log)
 	// if err != nil {
-	// 	log.Log(logger.ERROR, "Failed to load abilities: %v", err)
 	// 	return
 	// }
 
 	// // Print loaded abilities
 	// for _, ability := range abilities {
-	// 	fmt.Printf("Loaded Ability: %s (ID: %s)\n", ability.Name, ability.AbilityID)
+	// 	fmt.Printf("Loaded Ability: %s (ID: %s)\n", ability.Name, ability.AbilityId)
 	// 	fmt.Println(ability.Executors)
 	// }
 
-	// ----------------------------------------------------------------
-
-	adversary := objects.NewAdversaryWithLogger(log)
+	adversary := objects.Adversary{}
+	adversary.Logger = log
 	adversary.LoadFromYAML("data/adversary.yml")
-	fmt.Printf("Loaded Adversary: %s (ID: %s)\n", adversary.Name(), adversary.AdversaryID())
+	fmt.Printf("Loaded Adversary: %s (ID: %s)\n", adversary.Name, adversary.AdversaryId)
 }

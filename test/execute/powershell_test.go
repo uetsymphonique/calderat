@@ -2,7 +2,7 @@ package execute_test
 
 import (
 	"calderat/execute"
-	logger "calderat/utils"
+	"calderat/utils/logger"
 	"fmt"
 	"os"
 	"runtime"

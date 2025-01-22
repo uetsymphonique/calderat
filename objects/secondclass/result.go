@@ -3,25 +3,25 @@ package secondclass
 import "time"
 
 type Result struct {
-	out          string
-	err          string
-	exitCode     string
-	status       string
-	executedTime time.Time
-	finishedTime time.Time
+	Out          string
+	Err          string
+	ExitCode     string
+	Status       string
+	ExecutedTime time.Time
+	FinishedTime time.Time
 }
 
-func NewResult(stdout string, stderr string, exitCode string, status string, executedTime time.Time, finishedTime time.Time) Result {
+func NewResult(out string, err string, exitCode string, status string, executedTime time.Time, finishedTime time.Time) Result {
 	return Result{
-		out:          stdout,
-		err:          stderr,
-		exitCode:     exitCode,
-		status:       status,
-		executedTime: executedTime,
-		finishedTime: finishedTime,
+		Out:          out,
+		Err:          err,
+		ExitCode:     exitCode,
+		Status:       status,
+		ExecutedTime: executedTime,
+		FinishedTime: finishedTime,
 	}
 }
 
 func (r Result) Duration() time.Duration {
-	return r.finishedTime.Sub(r.executedTime)
+	return r.FinishedTime.Sub(r.ExecutedTime)
 }

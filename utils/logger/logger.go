@@ -1,9 +1,11 @@
 package logger
 
 import (
+	"calderat/utils/colorprint"
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"strings"
 )
 
@@ -70,18 +72,42 @@ func (l *Logger) Log(level LogLevel, format string, v ...interface{}) {
 		prefix := ""
 		switch level {
 		case TRACE:
-			prefix = "[TRACE] "
+			prefix = colorprint.ColorString("[TRACE] "+format, colorprint.CYAN)
 		case DEBUG:
-			prefix = "[DEBUG] "
+			prefix = colorprint.ColorString("[DEBUG] "+format, colorprint.GREEN)
 		case INFO:
-			prefix = "[INFO] "
+			prefix = colorprint.ColorString("[INFO] "+format, colorprint.CYAN)
 		case WARN:
-			prefix = "[WARN] "
+			prefix = colorprint.ColorString("[WARN] "+format, colorprint.YELLOW)
 		case ERROR:
-			prefix = "[ERROR] "
+			prefix = colorprint.ColorString("[ERROR] "+format, colorprint.RED)
 		}
-		l.logger.Printf(prefix+format, v...)
+		l.logger.Printf(prefix, v...)
+
+		// Add a stack trace for WARN and ERROR levels
+		if level >= WARN {
+			stack := getStackTrace()
+			l.logger.Printf(colorprint.ColorString("[STACK TRACE]\n%s", colorprint.MAGENTA), stack)
+		}
 	}
+}
+
+func getStackTrace() string {
+	var sb strings.Builder
+	pc := make([]uintptr, 10) // Limit stack trace depth to 10 frames
+	n := runtime.Callers(3, pc)
+
+	frames := runtime.CallersFrames(pc[:n])
+	for {
+		frame, more := frames.Next()
+		// Format: function_name (file:line)
+		sb.WriteString(fmt.Sprintf("%s (%s:%d)\n", frame.Function, frame.File, frame.Line))
+		if !more {
+			break
+		}
+	}
+
+	return sb.String()
 }
 
 // SetLevel dynamically updates the log level.

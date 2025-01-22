@@ -1,7 +1,7 @@
 package objects
 
 import (
-	logger "calderat/utils"
+	"calderat/utils/logger"
 	"fmt"
 	"os"
 
@@ -9,27 +9,11 @@ import (
 )
 
 type Adversary struct {
-	adversaryID    string   `yaml:"adversary_id"`
-	name           string   `yaml:"name"`
-	description    string   `yaml:"description"`
-	atomicOrdering []string `yaml:"atomic_ordering"`
+	AdversaryId    string   `yaml:"adversary_id"`
+	Name           string   `yaml:"name"`
+	Description    string   `yaml:"description"`
+	AtomicOrdering []string `yaml:"atomic_ordering"`
 	Logger         *logger.Logger
-}
-
-func NewAdversary(adversaryID, name, description string, atomicOrdering []string, log *logger.Logger) *Adversary {
-	return &Adversary{
-		adversaryID:    adversaryID,
-		name:           name,
-		description:    description,
-		atomicOrdering: atomicOrdering,
-		Logger:         log,
-	}
-}
-
-func NewAdversaryWithLogger(logger *logger.Logger) *Adversary {
-	return &Adversary{
-		Logger: logger,
-	}
 }
 
 func (a *Adversary) LoadFromYAML(filePath string) error {
@@ -48,27 +32,23 @@ func (a *Adversary) LoadFromYAML(filePath string) error {
 	}
 
 	a.Logger.Log(logger.DEBUG, "Successfully loaded Adversary from file: %s", filePath)
+
 	return nil
 
 }
 
-func (a *Adversary) Name() string {
-	return a.name
+func NewAdversary(adversary_id, name, description string, atomicOrdering []string, log *logger.Logger) *Adversary {
+	return &Adversary{
+		AdversaryId:    adversary_id,
+		Name:           name,
+		Description:    description,
+		AtomicOrdering: atomicOrdering,
+		Logger:         log,
+	}
 }
 
-func (a *Adversary) Description() string {
-	return a.description
-}
-
-func (a *Adversary) AtomicOrdering() []string {
-	return a.atomicOrdering
-}
-
-func (a *Adversary) AdversaryID() string {
-	return a.adversaryID
-}
-
-func (a *Adversary) String() string {
-	return fmt.Sprintf("Adversary(id=%s, name=%s, description=%s, atomicOrdering=%v)",
-		a.adversaryID, a.name, a.description, a.atomicOrdering)
+func NewAdversaryWithLogger(logger *logger.Logger) *Adversary {
+	adversary := Adversary{}
+	adversary.Logger = logger
+	return &adversary
 }

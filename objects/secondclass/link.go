@@ -16,7 +16,7 @@ const (
 )
 
 type Link struct {
-	LinkID       string
+	LinkId       string
 	Command      string
 	Status       int64
 	Jitter       time.Duration
@@ -26,7 +26,7 @@ type Link struct {
 }
 
 func NewLink(command string) *Link {
-	linkID := uuid.New().String()
-	link := Link{Command: command, LinkID: linkID, Status: EXECUTE, DecidedTime: time.Now(), Jitter: 1 * time.Second}
+	link_id := uuid.New().String()
+	link := Link{Command: command, LinkId: link_id, Status: EXECUTE, DecidedTime: time.Now(), Jitter: 1 * time.Second}
 	return &link
 }

@@ -12,5 +12,14 @@ type Executor struct {
 }
 
 func NewExecutor(name string, platform string, command string, code string, payloads []string, uploads []string, timeout int64, cleanup []string) *Executor {
-	return &Executor{Name: name, Platform: platform, Command: command, Code: code, Payloads: payloads, Uploads: uploads, Timeout: timeout, Cleanup: cleanup}
+	return &Executor{
+		Name:     name,
+		Platform: platform,
+		Command:  command,
+		Code:     code,
+		Payloads: payloads,
+		Uploads:  uploads,
+		Timeout:  timeout,
+		Cleanup:  cleanup,
+	}
 }

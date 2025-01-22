@@ -1,7 +1,7 @@
 package execute
 
 import (
-	logger "calderat/utils"
+	"calderat/utils/logger"
 	"context"
 	"fmt"
 	"os/exec"
