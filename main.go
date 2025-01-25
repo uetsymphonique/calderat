@@ -2,10 +2,13 @@ package main
 
 import (
 	"calderat/objects"
+	"calderat/utils/colorprint"
+	"calderat/utils/data"
 	"calderat/utils/envdetector"
 	logger "calderat/utils/logger"
 	"flag"
 	"fmt"
+	"strings"
 )
 
 func main() {
@@ -25,33 +28,28 @@ func main() {
 		log.Log(logger.ERROR, "Failed to detect environment: %v", err)
 		return
 	}
-
-	fmt.Printf("Operating System: %s\n", env.OS)
-	fmt.Printf("Shells: %s\n", env.ShortnameShells)
-	fmt.Println("Available Shells:")
-	for _, shell := range env.AvailableShells {
-		fmt.Printf("- %s\n", shell)
-	}
+	fmt.Println(colorprint.ColorString("Agent information:", colorprint.BLUE))
+	fmt.Printf("%s[+] Operating System: %s\n", colorprint.CYAN, env.OS)
+	fmt.Printf("[+] Shells: %s\n", strings.Join(env.ShortnameShells, ", "))
 	ipaddrs, err := env.GetAllIPAddresses()
 
-	fmt.Printf("Available IP Addresses: %v\n", ipaddrs)
+	fmt.Printf("Available IP Addresses: %s%s\n", strings.Join(ipaddrs, ", "), colorprint.RESET)
 
 	// ----------------------------------------------------------------
 
-	// // Load abilities from YAML
-	// abilities, err := objects.LoadMultipleFromYAML("data/26c8b8b5-7b5b-4de1-a128-7d37fb14f517.yml", log)
-	// if err != nil {
-	// 	return
-	// }
+	abilities, err := data.ProcessYmlAbilities("data/abilities/", log)
 
-	// // Print loaded abilities
-	// for _, ability := range abilities {
-	// 	fmt.Printf("Loaded Ability: %s (ID: %s)\n", ability.Name, ability.AbilityId)
-	// 	fmt.Println(ability.Executors)
-	// }
+	if err != nil {
+		log.Log(logger.ERROR, "Failed to load abilities: %v", err)
+		return
+	}
 
 	adversary := objects.Adversary{}
 	adversary.Logger = log
 	adversary.LoadFromYAML("data/adversary.yml")
-	fmt.Printf("Loaded Adversary: %s (ID: %s)\n", adversary.Name, adversary.AdversaryId)
+
+	operation := objects.NewOperation(adversary, true, abilities, log)
+	operation.Run()
+	fmt.Println(operation.Name, operation.OperationID)
+
 }

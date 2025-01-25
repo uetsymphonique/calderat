@@ -110,6 +110,18 @@ func (a *Ability) LoadFromYAML(filePath string) error {
 	return nil
 }
 
+func (a *Ability) IsAvailable() bool {
+	return true
+}
+
+func (a *Ability) CreateLinks() []secondclass.Link {
+	links := []secondclass.Link{}
+	for _, executor := range a.Executors {
+		links = append(links, *secondclass.NewLink(executor))
+	}
+	return links
+}
+
 // LoadMultipleFromYAML loads multiple abilities from the specified YAML file.
 func LoadMultipleFromYAML(filePath string, log *logger.Logger) ([]Ability, error) {
 	log.Log(logger.DEBUG, "Loading YAML file: %s", filePath)

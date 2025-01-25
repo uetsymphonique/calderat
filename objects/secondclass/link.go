@@ -20,13 +20,14 @@ type Link struct {
 	Command      string
 	Status       int64
 	Jitter       time.Duration
+	Executor     Executor
 	DecidedTime  time.Time
 	FinishedTime time.Time
 	Output       string
 }
 
-func NewLink(command string) *Link {
+func NewLink(executor Executor) *Link {
 	link_id := uuid.New().String()
-	link := Link{Command: command, LinkId: link_id, Status: EXECUTE, DecidedTime: time.Now(), Jitter: 1 * time.Second}
+	link := Link{Command: executor.Command, LinkId: link_id, Status: EXECUTE, DecidedTime: time.Now(), Jitter: 1 * time.Second}
 	return &link
 }
