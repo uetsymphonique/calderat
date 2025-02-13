@@ -2,6 +2,7 @@ package objects
 
 import (
 	"calderat/objects/secondclass"
+	"calderat/service/knowledge"
 	"calderat/utils/logger"
 	"errors"
 	"fmt"
@@ -20,17 +21,17 @@ const (
 
 // Ability represents a configurable ability loaded from a YAML file.
 type Ability struct {
-	AbilityId     string                 `yaml:"id"`
-	Tactic        string                 `yaml:"tactic"`
-	Technique     string                 `yaml:"technique_name"`
-	TechniqueId   string                 `yaml:"technique_id"`
-	Name          string                 `yaml:"name"`
-	Description   string                 `yaml:"description"`
-	Executors     []secondclass.Executor `yaml:"executors"`
-	Privilege     string                 `yaml:"privilege"`
-	DeletePayload bool                   `yaml:"delete_payload"`
-
-	Logger *logger.Logger
+	AbilityId        string                 `yaml:"id"`
+	Tactic           string                 `yaml:"tactic"`
+	Technique        string                 `yaml:"technique_name"`
+	TechniqueId      string                 `yaml:"technique_id"`
+	Name             string                 `yaml:"name"`
+	Description      string                 `yaml:"description"`
+	Executors        []secondclass.Executor `yaml:"executors"`
+	Privilege        string                 `yaml:"privilege"`
+	DeletePayload    bool                   `yaml:"delete_payload"`
+	KnowledgeService *knowledge.KnowledgeService
+	Logger           *logger.Logger
 }
 
 // NewAbility creates a new Ability object with the given parameters.
@@ -121,14 +122,22 @@ func (a *Ability) IsAvailable(shells []string) bool {
 	return false
 }
 
-func (a *Ability) CreateLinks(log *logger.Logger) []secondclass.Link {
+func (a *Ability) CreateLinks(log *logger.Logger, shells []string, facts map[string][]*secondclass.Fact) []secondclass.Link {
 	links := []secondclass.Link{}
-	links = append(links, *secondclass.NewLink(a.Name, a.AbilityId, a.TechniqueId, a.Executors[0], time.Duration(a.Executors[0].Timeout)*time.Second, log))
+	for _, executor := range a.Executors {
+		if slices.Contains(shells, executor.Name) {
+			commands := a.KnowledgeService.ReplaceFacts(executor.Command, facts)
+			for _, command := range commands {
+				links = append(links, *secondclass.NewLink(a.Name, a.AbilityId, a.TechniqueId, command, a.Executors[0], time.Duration(a.Executors[0].Timeout)*time.Second, log))
+			}
+			break
+		}
+	}
 	return links
 }
 
 // LoadMultipleFromYAML loads multiple abilities from the specified YAML file.
-func LoadMultipleFromYAML(filePath string, log *logger.Logger) ([]Ability, error) {
+func LoadMultipleAbilityFromYAML(filePath string, log *logger.Logger, knowledgeService *knowledge.KnowledgeService) ([]Ability, error) {
 	log.Log(logger.DEBUG, "Loading YAML file: %s", filePath)
 
 	data, err := os.ReadFile(filePath)
@@ -153,6 +162,7 @@ func LoadMultipleFromYAML(filePath string, log *logger.Logger) ([]Ability, error
 	// Set the logger for each ability
 	for i := range abilities {
 		abilities[i].Logger = log
+		abilities[i].KnowledgeService = knowledgeService
 	}
 
 	log.Log(logger.DEBUG, "Successfully loaded %d abilities from file: %s", len(abilities), filePath)

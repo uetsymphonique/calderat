@@ -1,8 +1,9 @@
 package objects
 
 import (
-	"calderat/execute"
 	"calderat/objects/secondclass"
+	"calderat/service/execute"
+	"calderat/service/knowledge"
 	"calderat/utils/logger"
 
 	"github.com/google/uuid"
@@ -21,6 +22,7 @@ type Operation struct {
 	Adversary         Adversary
 	Abilities         map[string]Ability
 	Source            Source
+	Facts             map[string][]*secondclass.Fact
 	Autonomous        bool
 	Links             []secondclass.Link
 	Logger            *logger.Logger
@@ -28,6 +30,7 @@ type Operation struct {
 	Status            int
 	shells            []string
 	ExecutingServices map[string]execute.ExecutingService
+	KnowledgeService  *knowledge.KnowledgeService
 	os                string
 	attireLog         AttireLog
 	ip                string
@@ -55,7 +58,7 @@ func (o *Operation) Run() {
 	for _, ability_id := range o.Adversary.AtomicOrdering {
 		if ability, exists := o.Abilities[ability_id]; exists {
 			if ability.IsAvailable(o.shells) {
-				links := ability.CreateLinks(o.Logger)
+				links := ability.CreateLinks(o.Logger, o.shells, o.Facts)
 				o.Links = append(o.Links, links...)
 				o.Logger.Log(logger.DEBUG, "Creating links of ability %s", ability.Name)
 				for _, link := range links {
@@ -70,7 +73,7 @@ func (o *Operation) Run() {
 	o.Logger.Log(logger.DEBUG, "Operation (%s - %s) successfully executed!", o.Name, o.OperationID)
 }
 
-func NewOperation(adversary Adversary, autonomous bool, abilities []Ability, shells []string, os string, ip string, log *logger.Logger) *Operation {
+func NewOperation(adversary Adversary, autonomous bool, abilities []Ability, shells []string, os string, ip string, log *logger.Logger, knowledgeService *knowledge.KnowledgeService) *Operation {
 	operation := Operation{
 		OperationID:       uuid.New().String(),
 		Name:              adversary.Name,
@@ -78,6 +81,7 @@ func NewOperation(adversary Adversary, autonomous bool, abilities []Ability, she
 		Autonomous:        autonomous,
 		Abilities:         map[string]Ability{},
 		Source:            Source{Logger: log},
+		Facts:             map[string][]*secondclass.Fact{},
 		Links:             []secondclass.Link{},
 		Ignored:           []Ability{},
 		Logger:            log,
@@ -86,10 +90,23 @@ func NewOperation(adversary Adversary, autonomous bool, abilities []Ability, she
 		os:                os,
 		attireLog:         *NewAttireLog(ip),
 		ExecutingServices: map[string]execute.ExecutingService{},
+		KnowledgeService:  knowledgeService,
 	}
 	operation.AddAbilities(abilities)
 	operation.addingExecutingServices()
+	operation.Source.LoadFromYAML("data/source.yml")
+	operation.addingFacts()
 	return &operation
+}
+
+func (o *Operation) addingFacts() {
+	for _, fact := range o.Source.Facts {
+		if facts, exists := o.Facts[fact.Trait]; exists {
+			o.Facts[fact.Trait] = append(facts, &fact)
+		} else {
+			o.Facts[fact.Trait] = []*secondclass.Fact{&fact}
+		}
+	}
 }
 
 func (o *Operation) addingExecutingServices() {

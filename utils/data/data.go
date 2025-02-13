@@ -2,13 +2,14 @@ package data
 
 import (
 	"calderat/objects"
+	"calderat/service/knowledge"
 	"calderat/utils/logger"
 	"fmt"
 	"os"
 	"path/filepath"
 )
 
-func ProcessYmlAbilities(folder string, log *logger.Logger) ([]objects.Ability, error) {
+func ProcessYmlAbilities(folder string, log *logger.Logger, knowledgeService *knowledge.KnowledgeService) ([]objects.Ability, error) {
 	ret_abilities := []objects.Ability{}
 	err := filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -19,7 +20,7 @@ func ProcessYmlAbilities(folder string, log *logger.Logger) ([]objects.Ability, 
 		if !info.IsDir() && filepath.Ext(path) == ".yml" {
 			log.Log(logger.TRACE, "Processing file: %s", path)
 			// Add your file processing logic here
-			abilities, err := objects.LoadMultipleFromYAML(path, log)
+			abilities, err := objects.LoadMultipleAbilityFromYAML(path, log, knowledgeService)
 			if err != nil {
 				return err
 			}

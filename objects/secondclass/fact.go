@@ -2,14 +2,14 @@ package secondclass
 
 type Fact struct {
 	Value  string `yaml:"value"`
-	Name   string `yaml:"name"`
+	Trait  string `yaml:"trait"`
 	Unique string `yaml:"unique"`
 }
 
-func NewFact(name string, value string) *Fact {
+func NewFact(trait string, value string) *Fact {
 	return &Fact{
-		Name:   name,
+		Trait:  trait,
 		Value:  value,
-		Unique: name + value,
+		Unique: trait + value,
 	}
 }

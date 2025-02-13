@@ -2,6 +2,7 @@ package main
 
 import (
 	"calderat/objects"
+	"calderat/service/knowledge"
 	"calderat/utils/colorprint"
 	"calderat/utils/data"
 	"calderat/utils/envdetector"
@@ -36,8 +37,8 @@ func main() {
 	fmt.Printf("Available IP Addresses: %s%s\n", strings.Join(ipaddrs, ", "), colorprint.RESET)
 
 	// ----------------------------------------------------------------
-
-	abilities, err := data.ProcessYmlAbilities("data/abilities/", log)
+	knowledgeService := knowledge.NewKnowledgeService(log)
+	abilities, err := data.ProcessYmlAbilities("data/abilities/", log, knowledgeService)
 
 	if err != nil {
 		log.Log(logger.ERROR, "Failed to load abilities: %v", err)
@@ -48,9 +49,8 @@ func main() {
 	adversary.Logger = log
 	adversary.LoadFromYAML("data/adversary.yml")
 
-	operation := objects.NewOperation(adversary, true, abilities, env.ShortnameShells, env.OS, ipaddrs[0], log)
-	operation.Source.LoadFromYAML("data/source.yml")
+	operation := objects.NewOperation(adversary, true, abilities, env.ShortnameShells, env.OS, ipaddrs[0], log, knowledgeService)
+
 	operation.Run()
-	fmt.Println(operation.Name, operation.OperationID)
 
 }

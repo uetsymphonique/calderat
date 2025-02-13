@@ -1,7 +1,7 @@
 package secondclass
 
 import (
-	"calderat/execute"
+	"calderat/service/execute"
 	"calderat/utils/logger"
 	"fmt"
 	"strings"
@@ -37,13 +37,13 @@ type Link struct {
 	Logger           *logger.Logger
 }
 
-func NewLink(procedureName string, procedureId string, mitreTechniqueId string, executor Executor, timeout time.Duration, log *logger.Logger) *Link {
+func NewLink(procedureName, procedureId, mitreTechniqueId, command string, executor Executor, timeout time.Duration, log *logger.Logger) *Link {
 	link_id := uuid.New().String()
 	link := Link{
 		ProcedureName:    procedureName,
 		ProcedureId:      procedureId,
 		MitreTechniqueId: mitreTechniqueId,
-		Command:          executor.Command,
+		Command:          command,
 		LinkId:           link_id,
 		Status:           EXECUTE,
 		Jitter:           1 * time.Second,
