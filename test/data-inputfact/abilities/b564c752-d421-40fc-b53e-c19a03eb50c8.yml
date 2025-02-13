@@ -1,0 +1,30 @@
+- access: {}
+  additional_info: {}
+  buckets:
+  - discovery
+  delete_payload: true
+  description: 'Ping #{ip} test case'
+  executors:
+  - additional_info: {}
+    build_target: null
+    cleanup: []
+    code: null
+    command: 'ping #{ip}'
+    language: null
+    name: psh
+    parsers: []
+    payloads: []
+    platform: windows
+    timeout: 60
+    uploads: []
+    variations: []
+  id: b564c752-d421-40fc-b53e-c19a03eb50c8
+  name: 'Ping #{ip} test case'
+  plugin: ''
+  privilege: ''
+  repeatable: false
+  requirements: []
+  singleton: false
+  tactic: discovery
+  technique_id: T1046
+  technique_name: Network Service Discovery

@@ -1,0 +1,19 @@
+facts:
+- collected_by: []
+  created: '2025-02-13T03:58:49Z'
+  limit_count: -1
+  links: []
+  name: ip
+  origin_type: IMPORTED
+  relationships: []
+  score: 0
+  source: 82e6684f-209f-4f07-8c3f-f2d401bc9926
+  technique_id: null
+  trait: ip
+  unique: ip8.8.8.8
+  value: 8.8.8.8
+id: 82e6684f-209f-4f07-8c3f-f2d401bc9926
+name: 'Source: Input Fact '
+plugin: ''
+relationships: []
+rules: []
