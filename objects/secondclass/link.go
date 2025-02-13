@@ -1,6 +1,10 @@
 package secondclass
 
 import (
+	"calderat/execute"
+	"calderat/utils/logger"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,18 +20,69 @@ const (
 )
 
 type Link struct {
-	LinkId       string
-	Command      string
-	Status       int64
-	Jitter       time.Duration
-	Executor     Executor
-	DecidedTime  time.Time
-	FinishedTime time.Time
-	Output       string
+	ProcedureName    string
+	ProcedureId      string
+	MitreTechniqueId string
+	LinkId           string
+	Command          string
+	Status           int64
+	Jitter           time.Duration
+	Executor         Executor
+	DecidedTime      time.Time
+	FinishedTime     time.Time
+	Out              string
+	Err              string
+	Timeout          time.Duration
+	Ability          string
+	Logger           *logger.Logger
 }
 
-func NewLink(executor Executor) *Link {
+func NewLink(procedureName string, procedureId string, mitreTechniqueId string, executor Executor, timeout time.Duration, log *logger.Logger) *Link {
 	link_id := uuid.New().String()
-	link := Link{Command: executor.Command, LinkId: link_id, Status: EXECUTE, DecidedTime: time.Now(), Jitter: 1 * time.Second}
+	link := Link{
+		ProcedureName:    procedureName,
+		ProcedureId:      procedureId,
+		MitreTechniqueId: mitreTechniqueId,
+		Command:          executor.Command,
+		LinkId:           link_id,
+		Status:           EXECUTE,
+		Jitter:           1 * time.Second,
+		Timeout:          timeout,
+		Executor:         executor,
+		Err:              "",
+		Logger:           log,
+	}
 	return &link
+}
+
+func (link *Link) Execute(executingService execute.ExecutingService) {
+	fmt.Println("--------------------------------")
+	time.Sleep(link.Jitter)
+	link.Decide()
+	output, err := executingService.Execute(link.Command, link.Timeout)
+	link.Finish()
+	link.Logger.Log(logger.INFO, "Command finished after %s", link.Duration())
+	link.Out = output
+	if err != nil {
+		link.Err = err.Error()
+		if strings.Contains(err.Error(), "timeout") {
+			link.Status = TIMEOUT
+		} else {
+			link.Status = ERROR
+		}
+	} else {
+		link.Status = SUCCESS
+	}
+}
+
+func (link *Link) Decide() {
+	link.DecidedTime = time.Now()
+}
+
+func (link *Link) Finish() {
+	link.FinishedTime = time.Now()
+}
+
+func (link *Link) Duration() time.Duration {
+	return link.FinishedTime.Sub(link.DecidedTime)
 }

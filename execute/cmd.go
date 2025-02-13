@@ -1,6 +1,7 @@
 package execute
 
 import (
+	"calderat/utils/colorprint"
 	"calderat/utils/logger"
 	"context"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 type Cmd struct {
 	shortName string
 	logger    *logger.Logger
+	path      string
 }
 
 // NewCmd initializes a new CMD executor
@@ -19,6 +21,7 @@ func NewCmd(log *logger.Logger) *Cmd {
 	return &Cmd{
 		shortName: "cmd",
 		logger:    log,
+		path:      "cmd",
 	}
 }
 
@@ -36,7 +39,7 @@ func (ce *Cmd) Execute(command string, timeout time.Duration) (string, error) {
 	defer cancel()
 
 	// Construct the execution command
-	cmd := exec.CommandContext(ctx, "cmd", "/C", command)
+	cmd := exec.CommandContext(ctx, ce.path, "/C", command)
 
 	// Capture the output
 	output, err := cmd.CombinedOutput()
@@ -48,10 +51,18 @@ func (ce *Cmd) Execute(command string, timeout time.Duration) (string, error) {
 	}
 
 	if err != nil {
-		ce.logger.Log(logger.ERROR, "Command execution failed: %v\nOutput: %s", err, string(output))
+		fmt.Println(colorprint.ColorString(fmt.Sprintf("Command execution failed: %v\nOutput: %s", err, string(output)), colorprint.RED))
 		return "", fmt.Errorf("failed to execute %s command: %v\nOutput: %s", ce.shortName, err, string(output))
 	}
 
 	ce.logger.Log(logger.DEBUG, "Command executed successfully. Output:\n%s", string(output))
 	return string(output), nil
+}
+
+func (ce *Cmd) ShortName() string {
+	return ce.shortName
+}
+
+func (ce *Cmd) Path() string {
+	return ce.path
 }

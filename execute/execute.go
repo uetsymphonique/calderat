@@ -1,5 +1,9 @@
 package execute
 
+import "time"
+
 type ExecutingService interface {
-	Execute(command string, timeout int)
+	Execute(string, time.Duration) (string, error)
+	ShortName() string
+	Path() string
 }

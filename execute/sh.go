@@ -1,6 +1,7 @@
 package execute
 
 import (
+	"calderat/utils/colorprint"
 	"calderat/utils/logger"
 	"context"
 	"fmt"
@@ -12,6 +13,7 @@ import (
 type Sh struct {
 	shortName string
 	logger    *logger.Logger
+	path      string
 }
 
 // NewSh initializes a new SH executor
@@ -19,6 +21,7 @@ func NewSh(log *logger.Logger) *Sh {
 	return &Sh{
 		shortName: "SH",
 		logger:    log,
+		path:      "sh",
 	}
 }
 
@@ -36,7 +39,7 @@ func (se *Sh) Execute(command string, timeout time.Duration) (string, error) {
 	defer cancel()
 
 	// Construct the execution command
-	cmd := exec.CommandContext(ctx, "sh", "-c", command)
+	cmd := exec.CommandContext(ctx, se.path, "-c", command)
 
 	// Capture the output
 	output, err := cmd.CombinedOutput()
@@ -48,10 +51,18 @@ func (se *Sh) Execute(command string, timeout time.Duration) (string, error) {
 	}
 
 	if err != nil {
-		se.logger.Log(logger.ERROR, "Command execution failed: %v\nOutput: %s", err, string(output))
+		fmt.Println(colorprint.ColorString(fmt.Sprintf("Command execution failed: %v\nOutput: %s", err, string(output)), colorprint.RED))
 		return "", fmt.Errorf("failed to execute %s command: %v\nOutput: %s", se.shortName, err, string(output))
 	}
 
 	se.logger.Log(logger.DEBUG, "Command executed successfully. Output:\n%s", string(output))
 	return string(output), nil
+}
+
+func (se *Sh) ShortName() string {
+	return se.shortName
+}
+
+func (se *Sh) Path() string {
+	return se.path
 }

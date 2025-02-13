@@ -1,6 +1,7 @@
 package execute
 
 import (
+	"calderat/utils/colorprint"
 	"calderat/utils/logger"
 	"context"
 	"fmt"
@@ -57,7 +58,7 @@ func (ps *PowerShell) Execute(command string, timeout time.Duration) (string, er
 	}
 
 	if err != nil {
-		ps.logger.Log(logger.ERROR, "Command execution failed: %v\nOutput: %s", err, string(output))
+		fmt.Println(colorprint.ColorString(fmt.Sprintf("Command execution failed: %v\nOutput: %s", err, string(output)), colorprint.RED))
 		return "", fmt.Errorf("failed to execute %s command: %v\nOutput: %s", ps.shortName, err, string(output))
 	}
 

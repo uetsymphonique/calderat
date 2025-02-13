@@ -6,7 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"gopkg.in/yaml.v2"
@@ -110,15 +112,18 @@ func (a *Ability) LoadFromYAML(filePath string) error {
 	return nil
 }
 
-func (a *Ability) IsAvailable() bool {
-	return true
+func (a *Ability) IsAvailable(shells []string) bool {
+	for _, executor := range a.Executors {
+		if slices.Contains(shells, executor.Name) {
+			return true
+		}
+	}
+	return false
 }
 
-func (a *Ability) CreateLinks() []secondclass.Link {
+func (a *Ability) CreateLinks(log *logger.Logger) []secondclass.Link {
 	links := []secondclass.Link{}
-	for _, executor := range a.Executors {
-		links = append(links, *secondclass.NewLink(executor))
-	}
+	links = append(links, *secondclass.NewLink(a.Name, a.AbilityId, a.TechniqueId, a.Executors[0], time.Duration(a.Executors[0].Timeout)*time.Second, log))
 	return links
 }
 

@@ -48,7 +48,7 @@ func main() {
 	adversary.Logger = log
 	adversary.LoadFromYAML("data/adversary.yml")
 
-	operation := objects.NewOperation(adversary, true, abilities, log)
+	operation := objects.NewOperation(adversary, true, abilities, env.ShortnameShells, env.OS, ipaddrs[0], log)
 	operation.Run()
 	fmt.Println(operation.Name, operation.OperationID)
 

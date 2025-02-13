@@ -7,11 +7,11 @@ type Executor struct {
 	Code     string
 	Payloads []string
 	Uploads  []string
-	Timeout  int64
+	Timeout  int
 	Cleanup  []string
 }
 
-func NewExecutor(name string, platform string, command string, code string, payloads []string, uploads []string, timeout int64, cleanup []string) *Executor {
+func NewExecutor(name string, platform string, command string, code string, payloads []string, uploads []string, timeout int, cleanup []string) *Executor {
 	return &Executor{
 		Name:     name,
 		Platform: platform,
