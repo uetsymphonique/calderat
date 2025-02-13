@@ -32,7 +32,7 @@ func (se *Sh) Execute(command string, timeout time.Duration) (string, error) {
 		return "", fmt.Errorf("%s is only supported on Linux systems", se.shortName)
 	}
 
-	se.logger.Log(logger.INFO, "Executing command: %s (Timeout: %v)", command, timeout)
+	se.logger.Log(logger.INFO, "Executing command: %s by %s (Timeout: %v)", command, se.shortName, timeout)
 
 	// Create a context with the specified timeout
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)

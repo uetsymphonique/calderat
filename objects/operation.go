@@ -20,6 +20,7 @@ type Operation struct {
 	Name              string
 	Adversary         Adversary
 	Abilities         map[string]Ability
+	Source            Source
 	Autonomous        bool
 	Links             []secondclass.Link
 	Logger            *logger.Logger
@@ -59,6 +60,8 @@ func (o *Operation) Run() {
 				o.Logger.Log(logger.DEBUG, "Creating links of ability %s", ability.Name)
 				for _, link := range links {
 					link.Execute(o.ExecutingServices[link.Executor.Name])
+					o.attireLog.AddLinkResult(&link)
+					o.attireLog.DumpToFile("log.json")
 				}
 			}
 		}
@@ -74,6 +77,7 @@ func NewOperation(adversary Adversary, autonomous bool, abilities []Ability, she
 		Adversary:         adversary,
 		Autonomous:        autonomous,
 		Abilities:         map[string]Ability{},
+		Source:            Source{Logger: log},
 		Links:             []secondclass.Link{},
 		Ignored:           []Ability{},
 		Logger:            log,

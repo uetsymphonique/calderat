@@ -83,7 +83,7 @@ func NewOutputBlock(content, level string) *OutputBlock {
 type AttireLog struct {
 	AttireVersion string                 `json:"attire-version"`
 	ExecutionData map[string]interface{} `json:"execution-data"`
-	Procedures    []Procedure            `json:"procedures"`
+	Procedures    []*Procedure           `json:"procedures"`
 }
 
 func NewAttireLog(ip string) *AttireLog {
@@ -114,12 +114,21 @@ func NewAttireLog(ip string) *AttireLog {
 			"user":           user,
 			"time-generated": time.Now().UTC().Format("2006-01-02T15:04:05.000Z"),
 		},
-		Procedures: []Procedure{},
+		Procedures: []*Procedure{},
 	}
 }
 
-func (al *AttireLog) AddProcedure(procedure Procedure) {
+func (al *AttireLog) AddProcedure(procedure *Procedure) {
 	al.Procedures = append(al.Procedures, procedure)
+}
+
+func (al *AttireLog) GetProcedureByName(name string) *Procedure {
+	for _, procedure := range al.Procedures {
+		if procedure.ProcedureName == name {
+			return procedure
+		}
+	}
+	return nil
 }
 
 func (a *AttireLog) DumpToFile(filename string) error {
@@ -136,4 +145,13 @@ func (a *AttireLog) DumpToFile(filename string) error {
 
 	// Write JSON to file
 	return encoder.Encode(a)
+}
+
+func (al *AttireLog) AddLinkResult(link *secondclass.Link) {
+	curr_procedure := al.GetProcedureByName(link.ProcedureName)
+	if curr_procedure == nil {
+		curr_procedure = NewProcedure(link, len(al.Procedures)+1)
+		al.AddProcedure(curr_procedure)
+	}
+	curr_procedure.AddStep(link, len(curr_procedure.Steps)+1)
 }

@@ -21,7 +21,7 @@ type PowerShell struct {
 // NewPowerShell initializes a new PowerShell instance
 func NewPowerShell(log *logger.Logger) *PowerShell {
 	return &PowerShell{
-		shortName: "PowerShell",
+		shortName: "psh",
 		path:      "powershell", // Default PowerShell executable
 		execArgs:  []string{"-ExecutionPolicy", "Bypass", "-Command"},
 		logger:    log,
@@ -35,7 +35,7 @@ func (ps *PowerShell) Execute(command string, timeout time.Duration) (string, er
 		return "", fmt.Errorf("%s is only supported on Windows systems", ps.shortName)
 	}
 
-	ps.logger.Log(logger.INFO, "Executing command: %s (Timeout: %v)", command, timeout)
+	ps.logger.Log(logger.INFO, "Executing command: %s by %s (Timeout: %v)", command, ps.shortName, timeout)
 	ps.logger.Log(logger.TRACE, "Full arguments: %v", ps.execArgs)
 
 	// Create a context with the specified timeout

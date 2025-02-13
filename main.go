@@ -49,6 +49,7 @@ func main() {
 	adversary.LoadFromYAML("data/adversary.yml")
 
 	operation := objects.NewOperation(adversary, true, abilities, env.ShortnameShells, env.OS, ipaddrs[0], log)
+	operation.Source.LoadFromYAML("data/source.yml")
 	operation.Run()
 	fmt.Println(operation.Name, operation.OperationID)
 

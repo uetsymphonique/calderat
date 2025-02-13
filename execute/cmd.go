@@ -32,7 +32,7 @@ func (ce *Cmd) Execute(command string, timeout time.Duration) (string, error) {
 		return "", fmt.Errorf("%s is only supported on Windows systems", ce.shortName)
 	}
 
-	ce.logger.Log(logger.INFO, "Executing command: %s (Timeout: %v)", command, timeout)
+	ce.logger.Log(logger.INFO, "Executing command: %s by %s (Timeout: %v)", command, ce.shortName, timeout)
 
 	// Create a context with the specified timeout
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
