@@ -1,0 +1,47 @@
+- access: {}
+  additional_info: {}
+  buckets:
+  - discovery
+  delete_payload: true
+  description: auto-generated
+  executors:
+  - additional_info: {}
+    build_target: null
+    cleanup:
+    - echo "step 1 in cleanup echo environment variable"
+    - echo "step 2 in cleanup echo environment variable"
+    code: null
+    command: echo "#{fact.env1}"; echo "#{fact.env2}"
+    language: null
+    name: psh
+    parsers: []
+    payloads: []
+    platform: windows
+    timeout: 60
+    uploads: []
+    variations: []
+  - additional_info: {}
+    build_target: null
+    cleanup:
+    - echo "step 1 in cleanup echo environment variable"
+    - echo "step 2 in cleanup echo environment variable"
+    code: null
+    command: 'echo #{fact.env.linux}'
+    language: null
+    name: sh
+    parsers: []
+    payloads: []
+    platform: linux
+    timeout: 60
+    uploads: []
+    variations: []
+  id: 0e7a3fc4-e7ae-4c66-bb23-b052b1a3f233
+  name: echo "#{fact.env1}"; echo "#{fact.env2}"
+  plugin: ''
+  privilege: ''
+  repeatable: false
+  requirements: []
+  singleton: false
+  tactic: discovery
+  technique_id: T1083
+  technique_name: File and Directory Discovery

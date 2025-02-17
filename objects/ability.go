@@ -122,18 +122,25 @@ func (a *Ability) IsAvailable(shells []string) bool {
 	return false
 }
 
-func (a *Ability) CreateLinks(log *logger.Logger, shells []string, facts map[string][]*secondclass.Fact) []secondclass.Link {
+func (a *Ability) CreateLinks(log *logger.Logger, shells []string, facts map[string][]*secondclass.Fact) ([]secondclass.Link, []secondclass.Link) {
 	links := []secondclass.Link{}
+	cleanupLinks := []secondclass.Link{}
 	for _, executor := range a.Executors {
 		if slices.Contains(shells, executor.Name) {
 			commands := a.KnowledgeService.ReplaceFacts(executor.Command, facts)
 			for _, command := range commands {
-				links = append(links, *secondclass.NewLink(a.Name, a.AbilityId, a.TechniqueId, command, a.Executors[0], time.Duration(a.Executors[0].Timeout)*time.Second, log))
+				links = append(links, *secondclass.NewLink(a.Name, a.AbilityId, a.TechniqueId, command, executor, time.Duration(executor.Timeout)*time.Second, log, false))
+			}
+			for i := len(executor.Cleanup) - 1; i >= 0; i-- {
+				commands = a.KnowledgeService.ReplaceFacts(executor.Cleanup[i], facts)
+				for _, command := range commands {
+					cleanupLinks = append(cleanupLinks, *secondclass.NewLink(a.Name, a.AbilityId, a.TechniqueId, command, executor, time.Duration(executor.Timeout)*time.Second, log, true))
+				}
 			}
 			break
 		}
 	}
-	return links
+	return links, cleanupLinks
 }
 
 // LoadMultipleFromYAML loads multiple abilities from the specified YAML file.

@@ -24,7 +24,9 @@ type Operation struct {
 	Source            Source
 	Facts             map[string][]*secondclass.Fact
 	Autonomous        bool
+	Cleanup           bool
 	Links             []secondclass.Link
+	CleanupLinks      []secondclass.Link
 	Logger            *logger.Logger
 	Ignored           []Ability
 	Status            int
@@ -58,9 +60,11 @@ func (o *Operation) Run() {
 	for _, ability_id := range o.Adversary.AtomicOrdering {
 		if ability, exists := o.Abilities[ability_id]; exists {
 			if ability.IsAvailable(o.shells) {
-				links := ability.CreateLinks(o.Logger, o.shells, o.Facts)
+				o.Logger.Log(logger.INFO, "Running ability %s", ability.Name)
+				links, cleanupLinks := ability.CreateLinks(o.Logger, o.shells, o.Facts)
 				o.Links = append(o.Links, links...)
 				o.Logger.Log(logger.DEBUG, "Creating links of ability %s", ability.Name)
+				o.CleanupLinks = append(o.CleanupLinks, cleanupLinks...)
 				for _, link := range links {
 					link.Execute(o.ExecutingServices[link.Executor.Name])
 					o.attireLog.AddLinkResult(&link)
@@ -69,20 +73,36 @@ func (o *Operation) Run() {
 			}
 		}
 	}
+	if o.Cleanup {
+		o.CleanupOperation()
+	}
 
-	o.Logger.Log(logger.DEBUG, "Operation (%s - %s) successfully executed!", o.Name, o.OperationID)
+	o.Logger.Log(logger.INFO, "Operation (%s - %s) successfully executed!", o.Name, o.OperationID)
 }
 
-func NewOperation(adversary Adversary, autonomous bool, abilities []Ability, shells []string, os string, ip string, log *logger.Logger, knowledgeService *knowledge.KnowledgeService) *Operation {
+func (o *Operation) CleanupOperation() {
+	o.Logger.Log(logger.TRACE, "Cleaning up operation %s", o.Name)
+	for i := len(o.CleanupLinks) - 1; i >= 0; i-- {
+		link := o.CleanupLinks[i]
+		link.Execute(o.ExecutingServices[link.Executor.Name])
+		o.attireLog.AddLinkResult(&link)
+		o.attireLog.DumpToFile("log.json")
+		o.Logger.Log(logger.DEBUG, "Cleaning up link of ability %s", link.Executor.Name)
+	}
+	o.Logger.Log(logger.INFO, "Operation (%s - %s) cleanup successfully executed!", o.Name, o.OperationID)
+}
+func NewOperation(adversary Adversary, autonomous, cleanup bool, abilities []Ability, shells []string, os string, ip string, log *logger.Logger, knowledgeService *knowledge.KnowledgeService) *Operation {
 	operation := Operation{
 		OperationID:       uuid.New().String(),
 		Name:              adversary.Name,
 		Adversary:         adversary,
 		Autonomous:        autonomous,
+		Cleanup:           cleanup,
 		Abilities:         map[string]Ability{},
 		Source:            Source{Logger: log},
 		Facts:             map[string][]*secondclass.Fact{},
 		Links:             []secondclass.Link{},
+		CleanupLinks:      []secondclass.Link{},
 		Ignored:           []Ability{},
 		Logger:            log,
 		Status:            FINISHED,

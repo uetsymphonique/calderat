@@ -16,6 +16,7 @@ type Procedure struct {
 	MitreTechniqueId     string      `json:"mitre-technique-id"`
 	Order                int         `json:"order"`
 	Steps                []Step      `json:"steps"`
+	CleanupCommands      []Step      `json:"cleanupCommands"`
 }
 
 func NewProcedure(link *secondclass.Link, order int) *Procedure {
@@ -29,11 +30,16 @@ func NewProcedure(link *secondclass.Link, order int) *Procedure {
 		MitreTechniqueId: link.MitreTechniqueId,
 		Order:            order,
 		Steps:            []Step{},
+		CleanupCommands:  []Step{},
 	}
 }
 
 func (p *Procedure) AddStep(link *secondclass.Link, order int) {
 	p.Steps = append(p.Steps, *NewStep(link, order))
+}
+
+func (p *Procedure) AddCleanup(link *secondclass.Link, order int) {
+	p.CleanupCommands = append(p.CleanupCommands, *NewStep(link, order))
 }
 
 type ProcedureId struct {
@@ -60,7 +66,7 @@ func NewStep(link *secondclass.Link, order int) *Step {
 		Command:   link.Command,
 		Executor:  link.Executor.Name,
 		Order:     order,
-		Output:    []OutputBlock{},
+		Output:    output,
 		TimeStart: link.DecidedTime.UTC().Format("2006-01-02T15:04:05.000Z"),
 		TimeStop:  link.FinishedTime.UTC().Format("2006-01-02T15:04:05.000Z"),
 	}
@@ -155,5 +161,9 @@ func (al *AttireLog) AddLinkResult(link *secondclass.Link) {
 		curr_procedure = NewProcedure(link, len(al.Procedures)+1)
 		al.AddProcedure(curr_procedure)
 	}
-	curr_procedure.AddStep(link, len(curr_procedure.Steps)+1)
+	if link.IsCleanup {
+		curr_procedure.AddCleanup(link, len(curr_procedure.CleanupCommands)+1)
+	} else {
+		curr_procedure.AddStep(link, len(curr_procedure.Steps)+1)
+	}
 }

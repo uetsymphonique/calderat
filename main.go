@@ -15,6 +15,8 @@ import (
 func main() {
 
 	logLevelFlag := flag.String("log-level", "INFO", "Set the log level (TRACE, DEBUG, INFO, WARN, ERROR)")
+	nonCleanupMode := flag.Bool("non-cleanup", false, "Disable cleanup operation")
+	nonAutonomousMode := flag.Bool("non-auto", false, "Enable non-auto mode")
 	flag.Parse()
 
 	// Initialize a centralized logger with a specified log level
@@ -49,7 +51,7 @@ func main() {
 	adversary.Logger = log
 	adversary.LoadFromYAML("data/adversary.yml")
 
-	operation := objects.NewOperation(adversary, true, abilities, env.ShortnameShells, env.OS, ipaddrs[0], log, knowledgeService)
+	operation := objects.NewOperation(adversary, !*nonAutonomousMode, !*nonCleanupMode, abilities, env.ShortnameShells, env.OS, ipaddrs[0], log, knowledgeService)
 
 	operation.Run()
 

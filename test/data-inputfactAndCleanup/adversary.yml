@@ -1,0 +1,10 @@
+adversary_id: c69ec055-e34a-49f3-a81b-26e6a5f3b1d5
+atomic_ordering:
+- b564c752-d421-40fc-b53e-c19a03eb50c8
+- 0e7a3fc4-e7ae-4c66-bb23-b052b1a3f233
+description: '---'
+has_repeatable_abilities: false
+name: 'Calderat''s testcase (Windows): Input Fact, Cleanup'
+objective: 495a9828-cab1-44dd-a0ca-66e58177d8cc
+plugin: ''
+tags: []

@@ -33,11 +33,11 @@ type Link struct {
 	Out              string
 	Err              string
 	Timeout          time.Duration
-	Ability          string
+	IsCleanup        bool
 	Logger           *logger.Logger
 }
 
-func NewLink(procedureName, procedureId, mitreTechniqueId, command string, executor Executor, timeout time.Duration, log *logger.Logger) *Link {
+func NewLink(procedureName, procedureId, mitreTechniqueId, command string, executor Executor, timeout time.Duration, log *logger.Logger, isCleanup bool) *Link {
 	link_id := uuid.New().String()
 	link := Link{
 		ProcedureName:    procedureName,
@@ -50,6 +50,7 @@ func NewLink(procedureName, procedureId, mitreTechniqueId, command string, execu
 		Timeout:          timeout,
 		Executor:         executor,
 		Err:              "",
+		IsCleanup:        isCleanup,
 		Logger:           log,
 	}
 	return &link
