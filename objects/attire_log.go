@@ -38,8 +38,13 @@ func (p *Procedure) AddStep(link *secondclass.Link, order int) {
 	p.Steps = append(p.Steps, *NewStep(link, order))
 }
 
-func (p *Procedure) AddCleanup(link *secondclass.Link, order int) {
-	p.CleanupCommands = append(p.CleanupCommands, *NewStep(link, order))
+func (p *Procedure) AddCleanup(link *secondclass.Link) {
+	if len(p.CleanupCommands) == 0 {
+		p.CleanupCommands = append(p.CleanupCommands, *NewStep(link, len(p.Steps)+1))
+	} else {
+		p.CleanupCommands = append(p.CleanupCommands, *NewStep(link, p.CleanupCommands[len(p.CleanupCommands)-1].Order+1))
+	}
+
 }
 
 type ProcedureId struct {
@@ -162,7 +167,7 @@ func (al *AttireLog) AddLinkResult(link *secondclass.Link) {
 		al.AddProcedure(curr_procedure)
 	}
 	if link.IsCleanup {
-		curr_procedure.AddCleanup(link, len(curr_procedure.CleanupCommands)+1)
+		curr_procedure.AddCleanup(link)
 	} else {
 		curr_procedure.AddStep(link, len(curr_procedure.Steps)+1)
 	}

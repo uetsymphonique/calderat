@@ -36,7 +36,9 @@ type Ability struct {
 
 // NewAbility creates a new Ability object with the given parameters.
 func NewAbility(ability_id, tactic, technique, technique_id, name, description string, executors []secondclass.Executor, privilege string, delete_payload bool, log *logger.Logger) *Ability {
-
+	if ability_id == "" {
+		ability_id = uuid.New().String()
+	}
 	return &Ability{
 		AbilityId:     ability_id,
 		Tactic:        tactic,

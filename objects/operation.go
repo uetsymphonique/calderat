@@ -4,7 +4,9 @@ import (
 	"calderat/objects/secondclass"
 	"calderat/service/execute"
 	"calderat/service/knowledge"
+	"calderat/utils/colorprint"
 	"calderat/utils/logger"
+	"fmt"
 
 	"github.com/google/uuid"
 	"golang.org/x/exp/slices"
@@ -57,10 +59,12 @@ func (o *Operation) AddAbilities(abilities []Ability) {
 func (o *Operation) Run() {
 	o.Status = RUNNING
 	o.Logger.Log(logger.TRACE, "Running operation %s", o.Name)
+	fmt.Println(colorprint.ColorString("\n------------------------ EXPLOIT PHASE ------------------------", colorprint.YELLOW))
 	for _, ability_id := range o.Adversary.AtomicOrdering {
 		if ability, exists := o.Abilities[ability_id]; exists {
 			if ability.IsAvailable(o.shells) {
-				o.Logger.Log(logger.INFO, "Running ability %s", ability.Name)
+				fmt.Println(colorprint.ColorString(fmt.Sprintf("\n[+] Running ability %s", ability.Name), colorprint.YELLOW))
+				fmt.Println(colorprint.ColorString(fmt.Sprintf("    [-] %s: %s(%s)", ability.Tactic, ability.Technique, ability.TechniqueId), colorprint.YELLOW))
 				links, cleanupLinks := ability.CreateLinks(o.Logger, o.shells, o.Facts)
 				o.Links = append(o.Links, links...)
 				o.Logger.Log(logger.DEBUG, "Creating links of ability %s", ability.Name)
@@ -73,21 +77,22 @@ func (o *Operation) Run() {
 			}
 		}
 	}
+	o.Logger.Log(logger.INFO, "Operation (%s - %s) successfully executed!", o.Name, o.OperationID)
 	if o.Cleanup {
+		fmt.Println(colorprint.ColorString("\n------------------------ CLEANUP PHASE ------------------------", colorprint.YELLOW))
 		o.CleanupOperation()
 	}
 
-	o.Logger.Log(logger.INFO, "Operation (%s - %s) successfully executed!", o.Name, o.OperationID)
 }
 
 func (o *Operation) CleanupOperation() {
 	o.Logger.Log(logger.TRACE, "Cleaning up operation %s", o.Name)
 	for i := len(o.CleanupLinks) - 1; i >= 0; i-- {
 		link := o.CleanupLinks[i]
+		o.Logger.Log(logger.INFO, "Cleaning up link of ability %s(%s)", link.ProcedureName, link.MitreTechniqueId)
 		link.Execute(o.ExecutingServices[link.Executor.Name])
 		o.attireLog.AddLinkResult(&link)
 		o.attireLog.DumpToFile("log.json")
-		o.Logger.Log(logger.DEBUG, "Cleaning up link of ability %s", link.Executor.Name)
 	}
 	o.Logger.Log(logger.INFO, "Operation (%s - %s) cleanup successfully executed!", o.Name, o.OperationID)
 }

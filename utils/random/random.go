@@ -29,3 +29,8 @@ func SecureRandomString(n int) string {
 	}
 	return string(result)
 }
+
+func SecureRandomInt(max int64) int64 {
+	n, _ := cryptrand.Int(cryptrand.Reader, big.NewInt(max))
+	return n.Int64()
+}

@@ -3,6 +3,7 @@ package secondclass
 import (
 	"calderat/service/execute"
 	"calderat/utils/logger"
+	"calderat/utils/random"
 	"fmt"
 	"strings"
 	"time"
@@ -46,7 +47,7 @@ func NewLink(procedureName, procedureId, mitreTechniqueId, command string, execu
 		Command:          command,
 		LinkId:           link_id,
 		Status:           EXECUTE,
-		Jitter:           1 * time.Second,
+		Jitter:           time.Duration(random.SecureRandomInt(5)) * time.Second,
 		Timeout:          timeout,
 		Executor:         executor,
 		Err:              "",
@@ -57,12 +58,13 @@ func NewLink(procedureName, procedureId, mitreTechniqueId, command string, execu
 }
 
 func (link *Link) Execute(executingService execute.ExecutingService) {
-	fmt.Println("--------------------------------")
+	link.Logger.Log(logger.INFO, "Waiting for %s", link.Jitter)
 	time.Sleep(link.Jitter)
 	link.Decide()
 	output, err := executingService.Execute(link.Command, link.Timeout)
 	link.Finish()
 	link.Logger.Log(logger.INFO, "Command finished after %s", link.Duration())
+	fmt.Println("--------------------------------")
 	link.Out = output
 	if err != nil {
 		link.Err = err.Error()
