@@ -36,8 +36,8 @@ facts:
   source: 82e6684f-209f-4f07-8c3f-f2d401bc9926
   technique_id: null
   trait: fact.env1
-  unique: fact.env1$env:PATH
-  value: $env:PATH
+  unique: fact.env1%path%
+  value: %path%
 - collected_by: []
   created: '2025-02-13T08:27:15Z'
   limit_count: -1
@@ -49,8 +49,8 @@ facts:
   source: 82e6684f-209f-4f07-8c3f-f2d401bc9926
   technique_id: null
   trait: fact.env2
-  unique: fact.env2$env:TEMP
-  value: $env:TEMP
+  unique: fact.env2%temp%
+  value: %temp%
 - collected_by: []
   created: '2025-02-13T08:27:15Z'
   limit_count: -1
@@ -62,8 +62,8 @@ facts:
   source: 82e6684f-209f-4f07-8c3f-f2d401bc9926
   technique_id: null
   trait: fact.env1
-  unique: fact.env1$env:APPDATA
-  value: $env:APPDATA
+  unique: fact.env1%appdata%
+  value: %appdata%
 - collected_by: []
   created: '2025-02-13T08:27:15Z'
   limit_count: -1
@@ -75,8 +75,8 @@ facts:
   source: 82e6684f-209f-4f07-8c3f-f2d401bc9926
   technique_id: null
   trait: fact.env2
-  unique: fact.env2$env:Programdata
-  value: $env:Programdata
+  unique: fact.env2%programdata%
+  value: %programdata%
 - collected_by: []
   created: '2025-02-13T08:27:15Z'
   limit_count: -1

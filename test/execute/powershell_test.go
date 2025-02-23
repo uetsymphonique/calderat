@@ -18,8 +18,8 @@ func TestNewPowerShell(t *testing.T) {
 	if ps == nil {
 		t.Fatal("Expected NewPowerShell to return a valid instance, got nil")
 	}
-	if ps.ShortName() != "PowerShell" {
-		t.Errorf("Expected shortName to be 'PowerShell', got '%s'", ps.ShortName())
+	if ps.ShortName() != "psh" {
+		t.Errorf("Expected shortName to be 'psh', got '%s'", ps.ShortName())
 	}
 	if ps.Path() != "powershell" {
 		t.Errorf("Expected path to be 'powershell', got '%s'", ps.Path())
