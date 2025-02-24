@@ -92,7 +92,6 @@ func (ce *Cmd) Execute(command string, timeout time.Duration) (string, error) {
 
 	if err != nil {
 		fmt.Println(colorprint.ColorString(fmt.Sprintf("Command execution failed: %v\nOutput: %s", err, string(output)), colorprint.RED))
-		ce.logger.Log(logger.ERROR, "Command execution failed with error: %v", err)
 		return "", fmt.Errorf("failed to execute %s command: %v\nOutput: %s", ce.shortName, err, string(output))
 	}
 
