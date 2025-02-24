@@ -2,7 +2,7 @@
 *.txt
 *.json
 data
-.mod
-.sum
+go.mod
+go.sum
 calderat
 calderat.exe
