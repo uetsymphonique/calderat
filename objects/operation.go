@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"calderat/objects/secondclass"
+	"calderat/secondclass"
 	"calderat/service/execute"
 	"calderat/service/knowledge"
 	"calderat/utils/colorprint"
@@ -60,10 +60,10 @@ func (o *Operation) Run() {
 	o.Status = RUNNING
 	o.Logger.Log(logger.TRACE, "Running operation %s", o.Name)
 	fmt.Println(colorprint.ColorString("\n------------------------ EXPLOIT PHASE ------------------------", colorprint.YELLOW))
-	for _, ability_id := range o.Adversary.AtomicOrdering {
+	for index, ability_id := range o.Adversary.AtomicOrdering {
 		if ability, exists := o.Abilities[ability_id]; exists {
 			if ability.IsAvailable(o.shells) {
-				fmt.Println(colorprint.ColorString(fmt.Sprintf("\n[+] Running ability %s", ability.Name), colorprint.YELLOW))
+				fmt.Println(colorprint.ColorString(fmt.Sprintf("\n[+] Running ability (%d/%d) %s", index, len(o.Adversary.AtomicOrdering), ability.Name), colorprint.YELLOW))
 				fmt.Println(colorprint.ColorString(fmt.Sprintf("    [-] %s: %s(%s)", ability.Tactic, ability.Technique, ability.TechniqueId), colorprint.YELLOW))
 				links, cleanupLinks := ability.CreateLinks(o.Logger, o.shells, o.Facts)
 				o.Links = append(o.Links, links...)
@@ -73,6 +73,9 @@ func (o *Operation) Run() {
 					link.Execute(o.ExecutingServices[link.Executor.Name])
 					o.attireLog.AddLinkResult(&link)
 					o.attireLog.DumpToFile("log.json")
+					if !o.Cleanup {
+						secondclass.DumpLinksToJson(o.CleanupLinks, "cleanups.json", o.Logger)
+					}
 				}
 			}
 		}
@@ -122,6 +125,37 @@ func NewOperation(adversary Adversary, autonomous, cleanup bool, abilities []Abi
 	operation.Source.LoadFromYAML("data/source.yml")
 	operation.addingFacts()
 	return &operation
+}
+
+func NewCleanupOperation(cleanupLinks []secondclass.Link, shells []string, os, ip string, log *logger.Logger) *Operation {
+	operation := Operation{
+		OperationID:       uuid.New().String(),
+		Name:              "Cleanup Operation",
+		CleanupLinks:      cleanupLinks,
+		Ignored:           []Ability{},
+		Logger:            log,
+		shells:            shells,
+		os:                os,
+		attireLog:         *NewAttireLog(ip),
+		ExecutingServices: map[string]execute.ExecutingService{},
+	}
+	operation.addingExecutingServices()
+	return &operation
+}
+
+func (o *Operation) RunningCleanupOperation() {
+	o.Logger.Log(logger.TRACE, "Running cleanup operation")
+	for i := len(o.CleanupLinks) - 1; i >= 0; i-- {
+		link := o.CleanupLinks[i]
+		o.Logger.Log(logger.INFO, "Running cleanup link of ability %s(%s)", link.ProcedureName, link.MitreTechniqueId)
+		link.Execute(o.ExecutingServices[link.Executor.Name])
+		o.attireLog.AddLinkResult(&link)
+		o.attireLog.DumpToFile("cleanup_log.json")
+
+		o.CleanupLinks = append(o.CleanupLinks[:i], o.CleanupLinks[i+1:]...)
+		secondclass.DumpLinksToJson(o.CleanupLinks, "not_completed_cleanups.json", o.Logger)
+	}
+	o.Logger.Log(logger.INFO, "Cleanup operation successfully executed!")
 }
 
 func (o *Operation) addingFacts() {

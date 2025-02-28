@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"calderat/objects/secondclass"
+	"calderat/secondclass"
 	"calderat/service/knowledge"
 	"calderat/utils/logger"
 	"errors"

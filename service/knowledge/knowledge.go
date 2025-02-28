@@ -1,7 +1,7 @@
 package knowledge
 
 import (
-	"calderat/objects/secondclass"
+	"calderat/secondclass"
 	"calderat/utils/logger"
 	"regexp"
 )

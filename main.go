@@ -2,6 +2,7 @@ package main
 
 import (
 	"calderat/objects"
+	"calderat/secondclass"
 	"calderat/service/knowledge"
 	"calderat/utils/colorprint"
 	"calderat/utils/data"
@@ -17,6 +18,7 @@ func main() {
 	logLevelFlag := flag.String("log-level", "INFO", "Set the log level (TRACE, DEBUG, INFO, WARN, ERROR)")
 	nonCleanupMode := flag.Bool("non-cleanup", false, "Disable cleanup operation")
 	nonAutonomousMode := flag.Bool("non-auto", false, "Enable non-auto mode")
+	cleanupOp := flag.Bool("cleanup-op", false, "Cleanup current operation")
 	flag.Parse()
 
 	// Initialize a centralized logger with a specified log level
@@ -37,6 +39,17 @@ func main() {
 	ipaddrs, err := env.GetAllIPAddresses()
 
 	fmt.Printf("Available IP Addresses: %s%s\n", strings.Join(ipaddrs, ", "), colorprint.RESET)
+
+	if *cleanupOp {
+		cleanupLinks, err := secondclass.LoadCleanupLinksFromJson("cleanups.json", log)
+		if err != nil {
+			log.Log(logger.ERROR, "Failed to load cleanup links: %v", err)
+			return
+		}
+		operation := objects.NewCleanupOperation(cleanupLinks, env.ShortnameShells, env.OS, ipaddrs[0], log)
+		operation.RunningCleanupOperation()
+		return
+	}
 
 	// ----------------------------------------------------------------
 	knowledgeService := knowledge.NewKnowledgeService(log)
