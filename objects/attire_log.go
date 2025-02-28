@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"calderat/objects/secondclass"
+	"calderat/secondclass"
 	"calderat/utils/random"
 	"encoding/json"
 	"os"

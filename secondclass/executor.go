@@ -1,14 +1,14 @@
 package secondclass
 
 type Executor struct {
-	Name     string
-	Platform string
-	Command  string
-	Code     string
-	Payloads []string
-	Uploads  []string
-	Timeout  int
-	Cleanup  []string
+	Name     string   `json:"name"`
+	Platform string   `json:"platform"`
+	Command  string   `json:"command"`
+	Code     string   `json:"code"`
+	Payloads []string `json:"payloads"`
+	Uploads  []string `json:"upload"`
+	Timeout  int      `json:"timeout"`
+	Cleanup  []string `json:"cleanup"`
 }
 
 func NewExecutor(name string, platform string, command string, code string, payloads []string, uploads []string, timeout int, cleanup []string) *Executor {
