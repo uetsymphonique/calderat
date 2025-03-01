@@ -26,7 +26,7 @@ func (ks *KnowledgeService) RequiredTraits(command string) []string {
 	// Print extracted values
 	for _, match := range matches {
 		if len(match) > 1 {
-			ks.Logger.Log(logger.DEBUG, "Command %s requires fact: #{%s}", command, match[1])
+			ks.Logger.Log(logger.TRACE, "Command %s requires fact: #{%s}", command, match[1])
 			traits = append(traits, match[1])
 		}
 	}

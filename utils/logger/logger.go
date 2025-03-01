@@ -17,6 +17,7 @@ const (
 	INFO
 	WARN
 	ERROR
+	QUIET
 )
 
 type Logger struct {
@@ -51,6 +52,8 @@ func NewWithOutput(logLevel string, output *os.File) (*Logger, error) {
 // parseLogLevel converts a log level string to the LogLevel type.
 func parseLogLevel(level string) (LogLevel, error) {
 	switch strings.ToUpper(level) {
+	case "QUIET":
+		return QUIET, nil
 	case "TRACE":
 		return TRACE, nil
 	case "DEBUG":
@@ -72,7 +75,7 @@ func (l *Logger) Log(level LogLevel, format string, v ...interface{}) {
 		prefix := ""
 		switch level {
 		case TRACE:
-			prefix = colorprint.ColorString("[TRACE] "+format, colorprint.CYAN)
+			prefix = colorprint.ColorString("[TRACE] "+format, colorprint.MAGENTA)
 		case DEBUG:
 			prefix = colorprint.ColorString("[DEBUG] "+format, colorprint.GREEN)
 		case INFO:
@@ -85,10 +88,10 @@ func (l *Logger) Log(level LogLevel, format string, v ...interface{}) {
 		l.logger.Printf(prefix, v...)
 
 		// Add a stack trace for WARN and ERROR levels
-		if level >= WARN {
-			stack := getStackTrace()
-			l.logger.Printf(colorprint.ColorString("[STACK TRACE]\n%s", colorprint.MAGENTA), stack)
-		}
+		// if level >= WARN {
+		// 	stack := getStackTrace()
+		// 	l.logger.Printf(colorprint.ColorString("[STACK TRACE]\n%s", colorprint.MAGENTA), stack)
+		// }
 	}
 }
 

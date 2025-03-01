@@ -36,7 +36,7 @@ func (s *Source) LoadFromYAML(filePath string) error {
 		return fmt.Errorf("error unmarshalling YAML for file '%s': %w", filePath, err)
 	}
 
-	s.Logger.Log(logger.DEBUG, "Successfully loaded Source from file: %s", filePath)
+	s.Logger.Log(logger.TRACE, "Successfully loaded Source from file: %s", filePath)
 
 	return nil
 }

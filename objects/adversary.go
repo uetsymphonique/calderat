@@ -31,7 +31,7 @@ func (a *Adversary) LoadFromYAML(filePath string) error {
 		return fmt.Errorf("error unmarshalling YAML for file '%s': %w", filePath, err)
 	}
 
-	a.Logger.Log(logger.DEBUG, "Successfully loaded Adversary from file: %s", filePath)
+	a.Logger.Log(logger.TRACE, "Successfully loaded Adversary from file: %s", filePath)
 
 	return nil
 
