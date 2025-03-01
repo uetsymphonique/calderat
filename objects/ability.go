@@ -85,7 +85,7 @@ func prehook(data map[string]interface{}) ([]byte, error) {
 // LoadFromYAML loads an Ability from the specified YAML file.
 func (a *Ability) LoadFromYAML(filePath string) error {
 
-	a.Logger.Log(logger.DEBUG, "Loading YAML file: %s", filePath)
+	a.Logger.Log(logger.TRACE, "Loading YAML file: %s", filePath)
 
 	rawData, err := os.ReadFile(filePath)
 	if err != nil {
@@ -111,7 +111,7 @@ func (a *Ability) LoadFromYAML(filePath string) error {
 		return fmt.Errorf("error unmarshalling YAML for file '%s': %w", filePath, err)
 	}
 
-	a.Logger.Log(logger.DEBUG, "Successfully loaded Ability from file: %s", filePath)
+	a.Logger.Log(logger.TRACE, "Successfully loaded Ability from file: %s", filePath)
 	return nil
 }
 
@@ -147,7 +147,7 @@ func (a *Ability) CreateLinks(log *logger.Logger, shells []string, facts map[str
 
 // LoadMultipleFromYAML loads multiple abilities from the specified YAML file.
 func LoadMultipleAbilityFromYAML(filePath string, log *logger.Logger, knowledgeService *knowledge.KnowledgeService) ([]Ability, error) {
-	log.Log(logger.DEBUG, "Loading YAML file: %s", filePath)
+	log.Log(logger.TRACE, "Loading YAML file: %s", filePath)
 
 	data, err := os.ReadFile(filePath)
 	if err != nil {
@@ -174,6 +174,6 @@ func LoadMultipleAbilityFromYAML(filePath string, log *logger.Logger, knowledgeS
 		abilities[i].KnowledgeService = knowledgeService
 	}
 
-	log.Log(logger.DEBUG, "Successfully loaded %d abilities from file: %s", len(abilities), filePath)
+	log.Log(logger.TRACE, "Successfully loaded %d abilities from file: %s", len(abilities), filePath)
 	return abilities, nil
 }

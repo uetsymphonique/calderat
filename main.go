@@ -4,7 +4,6 @@ import (
 	"calderat/objects"
 	"calderat/secondclass"
 	"calderat/service/knowledge"
-	"calderat/utils/colorprint"
 	"calderat/utils/data"
 	"calderat/utils/envdetector"
 	logger "calderat/utils/logger"
@@ -33,12 +32,9 @@ func main() {
 		log.Log(logger.ERROR, "Failed to detect environment: %v", err)
 		return
 	}
-	fmt.Println(colorprint.ColorString("Agent information:", colorprint.BLUE))
-	fmt.Printf("%s[+] Operating System: %s\n", colorprint.CYAN, env.OS)
-	fmt.Printf("[+] Shells: %s\n", strings.Join(env.ShortnameShells, ", "))
 	ipaddrs, err := env.GetAllIPAddresses()
-
-	fmt.Printf("Available IP Addresses: %s%s\n", strings.Join(ipaddrs, ", "), colorprint.RESET)
+	log.Log(logger.INFO, "Agent information:\n[+] Operating System: %s\n[+] Shells: %s\nAvailable IP Addresses: %s",
+		env.OS, strings.Join(env.ShortnameShells, ", "), strings.Join(ipaddrs, ", "))
 
 	if *cleanupOp {
 		cleanupLinks, err := secondclass.LoadCleanupLinksFromJson("cleanups.json", log)

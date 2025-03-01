@@ -65,8 +65,7 @@ func (link *Link) Execute(executingService execute.ExecutingService) {
 	link.Decide()
 	output, err := executingService.Execute(link.Command, link.Timeout)
 	link.Finish()
-	link.Logger.Log(logger.INFO, "Command finished after %s", link.Duration())
-	fmt.Println("--------------------------------")
+	link.Logger.Log(logger.INFO, "Command finished after %s\n", link.Duration())
 	link.Out = output
 	if err != nil {
 		link.Err = err.Error()
@@ -136,7 +135,7 @@ func DumpLinksToJson(links []Link, filename string, log *logger.Logger) {
 		return
 	}
 
-	log.Log(logger.INFO, "Successfully created cleanup links JSON file %s.", filename)
+	log.Log(logger.TRACE, "Successfully created cleanup links JSON file %s.", filename)
 }
 
 // Load cleanup links from JSON file

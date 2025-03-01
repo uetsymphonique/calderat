@@ -67,7 +67,7 @@ func (o *Operation) Run() {
 				fmt.Println(colorprint.ColorString(fmt.Sprintf("    [-] %s: %s(%s)", ability.Tactic, ability.Technique, ability.TechniqueId), colorprint.YELLOW))
 				links, cleanupLinks := ability.CreateLinks(o.Logger, o.shells, o.Facts)
 				o.Links = append(o.Links, links...)
-				o.Logger.Log(logger.DEBUG, "Creating links of ability %s", ability.Name)
+				o.Logger.Log(logger.TRACE, "Creating links of ability %s", ability.Name)
 				o.CleanupLinks = append(o.CleanupLinks, cleanupLinks...)
 				for _, link := range links {
 					link.Execute(o.ExecutingServices[link.Executor.Name])
