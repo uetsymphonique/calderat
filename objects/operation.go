@@ -43,7 +43,7 @@ type Operation struct {
 func (o *Operation) AddAbility(ability Ability) {
 	o.Logger.Log(logger.TRACE, "Add ability %s", ability.Name)
 	o.Abilities[ability.AbilityId] = ability
-	o.Logger.Log(logger.DEBUG, "Added ability (%s - %s) successfully!", ability.Name, ability.AbilityId)
+	o.Logger.Log(logger.TRACE, "Added ability (%s - %s) successfully!", ability.Name, ability.AbilityId)
 }
 
 func (o *Operation) RemoveAbility(ability_id string) {
